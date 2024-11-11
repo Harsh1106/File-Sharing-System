@@ -1,15 +1,29 @@
 import express from 'express';
-import router from './routes/routes.js';
+import dotenv from 'dotenv'; // Load environment variables
 import cors from 'cors';
+import router from './routes/routes.js';
 import DBconnection from './database/db.js';
+
+dotenv.config(); // Initialize dotenv to use variables in .env file
 
 const app = express();
 
+// Middleware to parse JSON data
+app.use(express.json());
+
+// Enable CORS
 app.use(cors());
+
+// Use router for routes
 app.use('/', router);
 
-const PORT = 8000;
+// Port configuration with environment variable
+const PORT = process.env.PORT || 8000; // This will get the port from .env or default to 8000
 
-
+// Database connection
 DBconnection();
-app.listen(PORT, () => console.log('Server is running on PORT 8000 '));
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on PORT ${PORT}`);
+});
