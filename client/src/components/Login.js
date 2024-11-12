@@ -1,11 +1,13 @@
-// client/components/Login.js
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { login } from '../services/authService';
+import { handleGoogleLogin } from '../firebase/firebaseConfig'; // Import the correct Google login function from firebaseConfig
 import './Login.css';
 
-const Login = ({ history }) => {
+const Login = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,21 +19,27 @@ const Login = ({ history }) => {
     setError(''); // Clear previous errors
     try {
       await login(credentials);
-      history.push('/'); // Redirect to home or protected page after login
+      navigate('/'); // Redirect to home or protected page after login
     } catch (error) {
       setError('Login failed. Please check your credentials.');
       console.error('Login failed:', error);
     }
   };
 
-  // Handle Google login - dummy function for now, you need to implement it in authService.js
-  const handleGoogleLogin = () => {
-    alert("Google login not yet implemented.");
-    // You can add logic here to use Google API or Firebase authentication for Google login
+  // Handle Google login using Firebase
+  const handleGoogleLoginClick = async () => {
+    try {
+      const user = await handleGoogleLogin(); // Use the Firebase Google login function
+      console.log('Google login successful:', user);
+      navigate('/'); // Redirect to home or protected page after successful login
+    } catch (error) {
+      setError('Google login failed. Please try again.');
+      console.error('Google login failed:', error);
+    }
   };
 
   const handleSignupRedirect = () => {
-    history.push('/signup'); // Redirect to a sign-up page if it exists
+    navigate('/signup'); // Redirect to signup page
   };
 
   return (
@@ -57,7 +65,7 @@ const Login = ({ history }) => {
       </form>
 
       <div className="additional-options">
-        <button onClick={handleGoogleLogin} className="google-login-button">
+        <button onClick={handleGoogleLoginClick} className="google-login-button">
           Login with Google
         </button>
         <button onClick={handleSignupRedirect} className="signup-button">

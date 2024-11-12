@@ -1,18 +1,29 @@
 // client/services/authService.js
 import axios from 'axios';
 
-// Set up the base URL for the server
-axios.defaults.baseURL = 'http://localhost:8000'; // Adjust to your server's URL if different
+axios.defaults.baseURL = 'http://localhost:8000';
 
-// Login function that retrieves a token and stores it
+// Register function to create a new user
+export const register = async (userData) => {
+  try {
+    const response = await axios.post('/api/register', userData); // Adjust API endpoint as needed
+    return response.data;
+  } catch (error) {
+    console.error("Registration failed:", error);
+    alert("Registration failed. Please try again.");
+    throw error;
+  }
+};
+
+// Existing login function
 export const login = async (credentials) => {
   try {
-    const response = await axios.post('/api/login', credentials); // Adjust endpoint if necessary
+    const response = await axios.post('/api/login', credentials);
     const token = response.data.token;
 
     if (token) {
-      localStorage.setItem('token', token); // Store token in localStorage
-      setAuthToken(token); // Set the token for future requests
+      localStorage.setItem('token', token);
+      setAuthToken(token);
     }
 
     return token;
@@ -23,13 +34,13 @@ export const login = async (credentials) => {
   }
 };
 
-// Logout function that clears the token
+// Logout function to remove the token
 export const logout = () => {
-  localStorage.removeItem('token'); // Remove token on logout
-  setAuthToken(null); // Clear token from headers
+  localStorage.removeItem('token');
+  setAuthToken(null);
 };
 
-// Function to set the authorization token in Axios
+// Set auth token for all Axios requests
 const setAuthToken = (token) => {
   if (token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -38,7 +49,7 @@ const setAuthToken = (token) => {
   }
 };
 
-// Immediately set token from localStorage if it exists, for session persistence
+// Load token if it exists in localStorage
 const token = localStorage.getItem('token');
 if (token) {
   setAuthToken(token);

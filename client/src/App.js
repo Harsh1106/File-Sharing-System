@@ -1,18 +1,18 @@
-// client/App.js
 import { useRef, useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch, useHistory } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import logo from './TransferHub.jpg';
 import './App.css';
 import { uploadFile } from './services/api';
-import { logout } from './services/authService'; // No need to import login here
-import Login from './components/Login'; // Import the Login component
+import { logout } from './services/authService';
+import Login from './components/Login';
+import Signup from './components/Signup';
 
 function Home() {
-  const [file, setFile] = useState('');
+  const [file, setFile] = useState(null);
   const [result, setResult] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const fileInputRef = useRef();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -24,7 +24,11 @@ function Home() {
   const handleLogout = () => {
     logout();
     setIsAuthenticated(false);
-    history.push('/login'); // Redirect to login after logout
+    navigate('/login'); // Redirect to login page after logout
+  };
+
+  const handleSignupRedirect = () => {
+    navigate('/signup'); // Redirect to signup page
   };
 
   const onUploadClick = () => {
@@ -38,12 +42,20 @@ function Home() {
   useEffect(() => {
     const getImage = async () => {
       if (file && isAuthenticated) {
-        const data = new FormData();
-        data.append("name", file.name);
-        data.append("file", file);
+        try {
+          const data = new FormData();
+          data.append("name", file.name);
+          data.append("file", file);
 
-        let response = await uploadFile(data);
-        setResult(response.path);
+          const response = await uploadFile(data);
+          if (response && response.path) {
+            setResult(response.path);
+          } else {
+            console.error('Error: Invalid response from server');
+          }
+        } catch (error) {
+          console.error('Error uploading file:', error);
+        }
       }
     };
     getImage();
@@ -68,11 +80,14 @@ function Home() {
 
         {isAuthenticated ? (
           <>
-            <button onClick={() => onUploadClick()}>Upload Now</button>
+            <button onClick={onUploadClick}>Upload Now</button>
             <button onClick={handleLogout}>Logout</button>
           </>
         ) : (
-          <button onClick={() => history.push('/login')}>Login</button>
+          <>
+            <button onClick={() => navigate('/login')}>Login</button>
+            <button onClick={handleSignupRedirect}>Signup</button>
+          </>
         )}
 
         <input
@@ -98,10 +113,11 @@ function Home() {
 function App() {
   return (
     <Router>
-      <Switch>
-        <Route path="/login" component={Login} />
-        <Route path="/" component={Home} />
-      </Switch>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/" element={<Home />} />
+      </Routes>
     </Router>
   );
 }
