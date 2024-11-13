@@ -1,0 +1,36 @@
+.home-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  h1 {
+    color: #4CAF50;
+  }
+  
+  .upload-button,
+  .logout-button,
+  .copy-link-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .upload-button:hover,
+  .logout-button:hover,
+  .copy-link-button:hover {
+    background-color: #45a049;
+  }
+  
+  a {
+    margin-top: 10px;
+    color: #4CAF50;
+    text-decoration: none;
+  }
+  

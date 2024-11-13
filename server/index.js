@@ -4,6 +4,8 @@ import cors from 'cors';
 import router from './routes/routes.js';
 import DBconnection from './database/db.js';
 
+
+
 dotenv.config(); // Initialize dotenv to use variables in .env file
 
 const app = express();
@@ -27,3 +29,7 @@ DBconnection();
 app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
 });
+
+console.log(process.env.MONGODB_URI);  // Should print the MongoDB URI
+console.log(process.env.JWT_SECRET);   // Should print the JWT secret
+console.log(process.env.PORT);         // Should print the port
