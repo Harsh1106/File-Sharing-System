@@ -157,9 +157,9 @@ const Dashboard = () => {
       <h1>Welcome to Your Dashboard</h1>
       <p>Welcome to your TransferHub Dashboard! Here, you can manage your files and settings.</p>
 
-      <button onClick={() => navigate('/upload')} className="upload-btn">
+      {/* <button onClick={() => navigate('/upload')} className="upload-btn">
         Go to Upload Page
-      </button>
+      </button> */}
 
       <div className="upload-section">
         <button onClick={onUploadClick} className="upload-btn">Choose File</button>
